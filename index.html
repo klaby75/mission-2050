@@ -279,7 +279,7 @@
       border-radius: 8px;
       background: rgba(17, 17, 19, 0.9);
       padding: 16px 18px;
-      text-align: right;
+      text-align: left;
     }
 
     .timer-value {
@@ -1055,7 +1055,8 @@
       co2Value.textContent = Math.round(getCurrentCo2());
       reductionValue.textContent = formatSignedPercent(getCurrentReductionPercent());
       reductionSince.textContent = `depuis ${formatStartDate()}`;
-      timerFill.style.transform = `scaleX(${state.totalSeconds ? state.remainingSeconds / state.totalSeconds : 0})`;
+      const elapsedRatio = state.totalSeconds ? 1 - state.remainingSeconds / state.totalSeconds : 1;
+      timerFill.style.transform = `scaleX(${clamp(elapsedRatio, 0, 1)})`;
       pauseButton.textContent = state.isRunning ? "Pause" : "Reprendre";
       undoButton.disabled = state.actions.length === 0;
 

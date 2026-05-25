@@ -971,6 +971,29 @@
       ctx.arc(currentX, currentY, 10, 0, Math.PI * 2);
       ctx.stroke();
 
+      const liveValueText = `${Math.round(getCurrentCo2())} MtCO2e`;
+      ctx.font = "800 14px Inter, system-ui, sans-serif";
+      const liveTextWidth = ctx.measureText(liveValueText).width;
+      const liveLabelWidth = liveTextWidth + 22;
+      const liveLabelHeight = 32;
+      const labelGap = 14;
+      const preferLeft = currentX + labelGap + liveLabelWidth > width - pad.right;
+      const liveLabelX = preferLeft
+        ? clamp(currentX - labelGap - liveLabelWidth, pad.left + 6, width - pad.right - liveLabelWidth)
+        : clamp(currentX + labelGap, pad.left + 6, width - pad.right - liveLabelWidth);
+      const liveLabelY = clamp(currentY - liveLabelHeight - 12, pad.top + 6, height - pad.bottom - liveLabelHeight - 6);
+
+      ctx.fillStyle = "rgba(5, 5, 6, 0.78)";
+      ctx.strokeStyle = "rgba(246, 243, 239, 0.18)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(liveLabelX, liveLabelY, liveLabelWidth, liveLabelHeight, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#f6f3ef";
+      ctx.fillText(liveValueText, liveLabelX + 11, liveLabelY + 21);
+
       ctx.fillStyle = "rgba(246, 243, 239, 0.75)";
       ctx.font = "700 12px Inter, system-ui, sans-serif";
       ctx.fillText("objectif 2050", width - pad.right - 88, toY(0) - 10);

@@ -298,7 +298,7 @@
     }
 
     .timer-box {
-      min-width: min(360px, 42vw);
+      width: clamp(360px, 32vw, 460px);
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(17, 17, 19, 0.9);
@@ -527,7 +527,6 @@
       }
 
       .timer-box {
-        min-width: 0;
         width: 100%;
         text-align: left;
       }

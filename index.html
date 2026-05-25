@@ -774,8 +774,16 @@
     }
 
     function getCurrentReductionPercent() {
-      const reduction = ((INITIAL_CO2 - getCurrentCo2()) / INITIAL_CO2) * 100;
-      return clamp(reduction, 0, 100);
+      const variation = ((getCurrentCo2() - INITIAL_CO2) / INITIAL_CO2) * 100;
+      return clamp(variation, -100, 100);
+    }
+
+    function formatSignedPercent(value) {
+      const rounded = Math.round(value);
+      if (rounded > 0) {
+        return `+${rounded}%`;
+      }
+      return `${rounded}%`;
     }
 
     function formatTime(seconds) {
@@ -1045,7 +1053,7 @@
       timerValue.textContent = formatTime(state.remainingSeconds);
       dateValue.textContent = formatDate();
       co2Value.textContent = Math.round(getCurrentCo2());
-      reductionValue.textContent = `${Math.round(getCurrentReductionPercent())}%`;
+      reductionValue.textContent = formatSignedPercent(getCurrentReductionPercent());
       reductionSince.textContent = `depuis ${formatStartDate()}`;
       timerFill.style.transform = `scaleX(${state.totalSeconds ? state.remainingSeconds / state.totalSeconds : 0})`;
       pauseButton.textContent = state.isRunning ? "Pause" : "Reprendre";

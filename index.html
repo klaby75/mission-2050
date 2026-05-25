@@ -284,18 +284,19 @@
 
     .timer-value {
       display: block;
+      margin-top: 8px;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 900;
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 850;
       line-height: 1;
     }
 
     .date-value {
       display: block;
-      margin-top: 8px;
       color: var(--red);
-      font-size: clamp(1rem, 1.7vw, 1.3rem);
-      font-weight: 850;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1;
       text-transform: capitalize;
     }
 
@@ -582,8 +583,8 @@
       </div>
 
       <aside class="timer-box" aria-label="Compte à rebours">
-        <span id="timerValue" class="timer-value">60:00</span>
         <span id="dateValue" class="date-value">mai 2026</span>
+        <span id="timerValue" class="timer-value">60:00</span>
         <div class="timer-track" aria-hidden="true">
           <div id="timerFill" class="timer-fill"></div>
         </div>

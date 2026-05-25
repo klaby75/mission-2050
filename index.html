@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050506">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mission 2050">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Mission 2050</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <style>
+    :root {
+      --bg: #050506;
+      --panel: #111113;
+      --panel-soft: #17171a;
+      --line: #2a2a2e;
+      --text: #f6f3ef;
+      --muted: #a8a3a0;
+      --red: #e6362f;
+      --red-dark: #9f1f1a;
+      --red-soft: rgba(230, 54, 47, 0.16);
+      --green: #32d583;
+      --shadow: rgba(0, 0, 0, 0.44);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .screen {
+      min-height: 100vh;
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at 22% 8%, rgba(230, 54, 47, 0.16), transparent 28rem),
+        linear-gradient(135deg, #050506 0%, #08080a 55%, #0d0606 100%);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .config-screen {
+      display: grid;
+      place-items: center;
+      padding: clamp(24px, 5vw, 64px);
+    }
+
+    .config-shell {
+      width: min(1020px, 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(28px, 5vw, 72px);
+      align-items: center;
+    }
+
+    .brand-kicker {
+      margin: 0 0 18px;
+      color: var(--red);
+      font-size: 0.84rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin-bottom: 24px;
+      font-size: clamp(3.25rem, 8vw, 7.5rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 560px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      line-height: 1.55;
+    }
+
+    .config-panel,
+    .modal-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(17, 17, 19, 0.92);
+      box-shadow: 0 24px 70px var(--shadow);
+    }
+
+    .config-panel {
+      padding: clamp(22px, 3vw, 34px);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .panel-title h2 {
+      margin-bottom: 7px;
+      font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+      letter-spacing: 0;
+    }
+
+    .panel-title p {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .unit-case {
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background: #070708;
+      padding: 0 14px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px var(--red-soft);
+    }
+
+    .primary-button,
+    .ghost-button,
+    .icon-button,
+    .choice-button {
+      min-height: 42px;
+      border-radius: 6px;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .primary-button {
+      width: 100%;
+      margin-top: 26px;
+      padding: 0 18px;
+      color: #fff;
+      background: var(--red);
+      font-weight: 850;
+    }
+
+    .primary-button:hover,
+    .icon-button:hover,
+    .choice-button.active {
+      background: #ff443c;
+    }
+
+    .primary-button:active,
+    .ghost-button:active,
+    .icon-button:active,
+    .choice-button:active {
+      transform: translateY(1px);
+    }
+
+    .ghost-button {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 0 13px;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .ghost-button:hover {
+      border-color: #4c4c52;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .game-screen {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(16px, 2.4vw, 30px);
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .game-title h2 {
+      margin-bottom: 4px;
+      font-size: clamp(1.4rem, 2.6vw, 2.5rem);
+      letter-spacing: 0;
+    }
+
+    .game-title p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .timer-box {
+      min-width: min(360px, 42vw);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(17, 17, 19, 0.9);
+      padding: 16px 18px;
+      text-align: right;
+    }
+
+    .timer-value {
+      display: block;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .date-value {
+      display: block;
+      margin-top: 8px;
+      color: var(--red);
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      font-weight: 850;
+      text-transform: capitalize;
+    }
+
+    .timer-track {
+      width: 100%;
+      height: 5px;
+      margin-top: 15px;
+      border-radius: 999px;
+      background: #2a1514;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--red);
+      transform-origin: left center;
+      transition: transform 280ms ease;
+    }
+
+    .chart-wrap {
+      position: relative;
+      min-height: 480px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .co2-readout {
+      position: absolute;
+      left: clamp(18px, 2vw, 28px);
+      top: clamp(16px, 2vw, 24px);
+      pointer-events: none;
+    }
+
+    .co2-readout span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .co2-readout strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--text);
+      font-size: clamp(2.1rem, 5vw, 4.6rem);
+      line-height: 0.96;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .footerbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .history {
+      min-height: 42px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .icon-button {
+      min-width: 48px;
+      height: 42px;
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      background: var(--red);
+      padding: 0 15px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-panel {
+      width: min(520px, 100%);
+      padding: 24px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .modal-head h2 {
+      margin-bottom: 6px;
+      font-size: 1.55rem;
+    }
+
+    .modal-head p {
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .close-button {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.3rem;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .choice-button {
+      border: 1px solid var(--line);
+      background: #080809;
+      padding: 10px 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 850;
+      line-height: 1.15;
+    }
+
+    .choice-button.active {
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(112px, auto);
+      gap: 10px;
+      margin-top: 22px;
+      align-items: stretch;
+    }
+
+    .modal-actions .primary-button {
+      margin-top: 0;
+    }
+
+    .modal-actions .ghost-button {
+      height: 100%;
+    }
+
+    .hint {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 820px) {
+      .config-shell,
+      .topbar,
+      .footerbar {
+        grid-template-columns: 1fr;
+      }
+
+      .timer-box {
+        min-width: 0;
+        width: 100%;
+        text-align: left;
+      }
+
+      .chart-wrap {
+        min-height: 420px;
+      }
+
+      .history {
+        white-space: normal;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .field-row,
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .game-screen {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="configScreen" class="screen config-screen">
+    <section class="config-shell" aria-labelledby="configTitle">
+      <div>
+        <p class="brand-kicker">Jeu de cartes</p>
+        <h1>Mission 2050</h1>
+        <p class="intro">Configurez la session, lancez le chrono, puis pilotez la trajectoire CO2 au rythme des cartes acceptées par les joueurs.</p>
+      </div>
+
+      <form id="configForm" class="config-panel">
+        <div class="panel-title">
+          <div>
+            <h2 id="configTitle">Configuration</h2>
+            <p>La durée de partie représente toute la progression entre la date choisie et décembre 2050.</p>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <label>
+            Durée du jeu
+            <input id="durationInput" type="number" min="1" max="360" value="60" required>
+          </label>
+
+          <div class="field-row">
+            <label>
+              Mois actuel
+              <select id="monthInput" required></select>
+            </label>
+
+            <label>
+              Année actuelle
+              <input id="yearInput" type="number" min="2020" max="2050" value="2026" required>
+            </label>
+          </div>
+        </div>
+
+        <button class="primary-button" type="submit">Lancer le jeu</button>
+      </form>
+    </section>
+  </main>
+
+  <main id="gameScreen" class="screen game-screen hidden">
+    <header class="topbar">
+      <div class="game-title">
+        <p class="brand-kicker">Trajectoire en cours</p>
+        <h2>Réduction des émissions CO2</h2>
+        <p>Sans carte validée, le niveau reste à 700 MtCO2e. Seules les actions des joueurs font évoluer la trajectoire.</p>
+      </div>
+
+      <aside class="timer-box" aria-label="Compte à rebours">
+        <span id="timerValue" class="timer-value">60:00</span>
+        <span id="dateValue" class="date-value">mai 2026</span>
+        <div class="timer-track" aria-hidden="true">
+          <div id="timerFill" class="timer-fill"></div>
+        </div>
+      </aside>
+    </header>
+
+    <section class="chart-wrap" aria-label="Graphique Mission 2050">
+      <canvas id="chartCanvas"></canvas>
+      <div class="co2-readout">
+        <span>niveau actuel</span>
+        <strong id="co2Value">700</strong>
+        <span class="unit-case">MtCO2e</span>
+      </div>
+    </section>
+
+    <footer class="footerbar">
+      <div id="historyText" class="history">Aucune action enregistrée pour le moment.</div>
+      <div class="actions">
+        <button id="pauseButton" class="ghost-button" type="button">Pause</button>
+        <button id="undoButton" class="ghost-button" type="button" disabled>Annuler</button>
+        <button id="resetButton" class="ghost-button" type="button">Réinitialiser</button>
+        <button id="backButton" class="ghost-button" type="button">Configuration</button>
+        <button id="openActionButton" class="icon-button" type="button" aria-label="Ajouter une action CO2">+</button>
+      </div>
+    </footer>
+  </main>
+
+  <div id="actionModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <form id="actionForm" class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">Action CO2</h2>
+          <p>Indiquez l’impact de la carte acceptée.</p>
+        </div>
+        <button id="closeModalButton" class="close-button" type="button" aria-label="Fermer">×</button>
+      </div>
+
+      <div class="choice-grid" role="group" aria-label="Type d'action">
+        <button class="choice-button active" type="button" data-action-type="fixed">Réduction fixe</button>
+        <button class="choice-button" type="button" data-action-type="annual">Réduction / an</button>
+        <button class="choice-button" type="button" data-action-type="add">Ajouter</button>
+      </div>
+
+      <label>
+        <span>Montant en <span class="unit-case">MtCO2e</span></span>
+        <input id="amountInput" type="number" min="0" max="1000" step="1" value="20" required>
+      </label>
+      <p id="actionHint" class="hint">Retire le montant une fois à partir du niveau actuel.</p>
+
+      <div class="modal-actions">
+        <button class="primary-button" type="submit">Appliquer</button>
+        <button id="cancelActionButton" class="ghost-button" type="button">Annuler</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const END_YEAR = 2050;
+    const END_MONTH_INDEX = 11;
+    const INITIAL_CO2 = 700;
+    const MAX_CO2 = 1000;
+    const MONTHS = [
+      "janvier", "février", "mars", "avril", "mai", "juin",
+      "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+    ];
+
+    const configScreen = document.getElementById("configScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const configForm = document.getElementById("configForm");
+    const durationInput = document.getElementById("durationInput");
+    const monthInput = document.getElementById("monthInput");
+    const yearInput = document.getElementById("yearInput");
+    const chartCanvas = document.getElementById("chartCanvas");
+    const co2Value = document.getElementById("co2Value");
+    const timerValue = document.getElementById("timerValue");
+    const dateValue = document.getElementById("dateValue");
+    const timerFill = document.getElementById("timerFill");
+    const historyText = document.getElementById("historyText");
+    const pauseButton = document.getElementById("pauseButton");
+    const undoButton = document.getElementById("undoButton");
+    const resetButton = document.getElementById("resetButton");
+    const backButton = document.getElementById("backButton");
+    const openActionButton = document.getElementById("openActionButton");
+    const actionModal = document.getElementById("actionModal");
+    const actionForm = document.getElementById("actionForm");
+    const amountInput = document.getElementById("amountInput");
+    const actionHint = document.getElementById("actionHint");
+    const closeModalButton = document.getElementById("closeModalButton");
+    const cancelActionButton = document.getElementById("cancelActionButton");
+    const choiceButtons = Array.from(document.querySelectorAll("[data-action-type]"));
+
+    const state = {
+      config: {
+        durationMinutes: 60,
+        startMonth: 4,
+        startYear: 2026
+      },
+      totalSeconds: 3600,
+      remainingSeconds: 3600,
+      isRunning: false,
+      timerId: null,
+      actions: [],
+      selectedActionType: "fixed"
+    };
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    function mixColor(start, end, ratio) {
+      const safeRatio = clamp(ratio, 0, 1);
+      const channel = (from, to) => Math.round(from + (to - from) * safeRatio);
+      return `rgb(${channel(start[0], end[0])}, ${channel(start[1], end[1])}, ${channel(start[2], end[2])})`;
+    }
+
+    function getCo2Color(value) {
+      const lowCo2Ratio = 1 - clamp(value / INITIAL_CO2, 0, 1);
+      return mixColor([230, 54, 47], [37, 118, 255], lowCo2Ratio);
+    }
+
+    function populateMonths() {
+      MONTHS.forEach((month, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = month.charAt(0).toUpperCase() + month.slice(1);
+        monthInput.appendChild(option);
+      });
+      monthInput.value = "4";
+    }
+
+    function getMonthSerial(year, month) {
+      return year * 12 + month;
+    }
+
+    function getCurrentSerial() {
+      const start = getMonthSerial(state.config.startYear, state.config.startMonth);
+      const end = getMonthSerial(END_YEAR, END_MONTH_INDEX);
+      const elapsedRatio = state.totalSeconds === 0 ? 1 : 1 - state.remainingSeconds / state.totalSeconds;
+      return Math.round(start + (end - start) * clamp(elapsedRatio, 0, 1));
+    }
+
+    function getCurrentDate() {
+      const serial = getCurrentSerial();
+      const year = Math.floor(serial / 12);
+      const month = serial % 12;
+      return { year, month, serial };
+    }
+
+    function getCurrentYearPosition() {
+      const current = getCurrentDate();
+      return current.year + current.month / 12;
+    }
+
+    function getBaseValueAtYear() {
+      return INITIAL_CO2;
+    }
+
+    function getValueAtYear(yearPosition) {
+      let value = getBaseValueAtYear(yearPosition);
+
+      state.actions.forEach((action) => {
+        if (yearPosition < action.yearPosition) {
+          return;
+        }
+
+        if (action.type === "fixed") {
+          value -= action.amount;
+        } else if (action.type === "annual") {
+          const yearsElapsed = Math.max(0, yearPosition - action.yearPosition);
+          value -= action.amount * (1 + yearsElapsed);
+        } else if (action.type === "add") {
+          value += action.amount;
+        }
+      });
+
+      return clamp(value, 0, MAX_CO2);
+    }
+
+    function getCurrentCo2() {
+      return getValueAtYear(getCurrentYearPosition());
+    }
+
+    function formatTime(seconds) {
+      const safeSeconds = Math.max(0, Math.round(seconds));
+      const minutes = Math.floor(safeSeconds / 60);
+      const remaining = safeSeconds % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(remaining).padStart(2, "0")}`;
+    }
+
+    function formatDate() {
+      const current = getCurrentDate();
+      return `${MONTHS[current.month]} ${current.year}`;
+    }
+
+    function formatAction(action) {
+      const sign = action.type === "add" ? "+" : "-";
+      const suffix = action.type === "annual" ? "/an" : "";
+      return `${sign}${action.amount} MtCO2e${suffix} (${MONTHS[action.month]} ${action.year})`;
+    }
+
+    function resizeCanvas() {
+      const rect = chartCanvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      chartCanvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      chartCanvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      chartCanvas.style.width = `${rect.width}px`;
+      chartCanvas.style.height = `${rect.height}px`;
+      drawChart();
+    }
+
+    function drawChart() {
+      const ctx = chartCanvas.getContext("2d");
+      const dpr = window.devicePixelRatio || 1;
+      const width = chartCanvas.width / dpr;
+      const height = chartCanvas.height / dpr;
+      const pad = {
+        top: 142,
+        right: 32,
+        bottom: 54,
+        left: 76
+      };
+      const plotWidth = Math.max(1, width - pad.left - pad.right);
+      const plotHeight = Math.max(1, height - pad.top - pad.bottom);
+      const startSerial = getMonthSerial(state.config.startYear, state.config.startMonth);
+      const currentSerial = clamp(getCurrentSerial(), startSerial, getMonthSerial(END_YEAR, END_MONTH_INDEX));
+      const endSerial = getMonthSerial(END_YEAR, END_MONTH_INDEX);
+      const startPosition = state.config.startYear + state.config.startMonth / 12;
+      const endPosition = END_YEAR + (END_MONTH_INDEX + 1) / 12;
+      const totalYears = Math.max(1 / 12, endPosition - startPosition);
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.strokeStyle = "rgba(246, 243, 239, 0.13)";
+      ctx.lineWidth = 1;
+      ctx.font = "12px Inter, system-ui, sans-serif";
+      ctx.fillStyle = "rgba(246, 243, 239, 0.68)";
+
+      for (let i = 0; i <= 5; i += 1) {
+        const y = pad.top + (plotHeight / 5) * i;
+        const labelValue = Math.round(MAX_CO2 - (MAX_CO2 / 5) * i);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(width - pad.right, y);
+        ctx.stroke();
+        ctx.fillText(String(labelValue), 20, y + 4);
+      }
+
+      const yearSpan = END_YEAR - state.config.startYear;
+      const yearStep = yearSpan <= 8 ? 1 : yearSpan <= 16 ? 2 : 4;
+      const firstTickYear = state.config.startMonth === 0 ? state.config.startYear : state.config.startYear + 1;
+      for (let year = firstTickYear; year <= END_YEAR; year += yearStep) {
+        const x = pad.left + ((year - startPosition) / totalYears) * plotWidth;
+        if (x < pad.left || x > width - pad.right) {
+          continue;
+        }
+        ctx.beginPath();
+        ctx.moveTo(x, pad.top);
+        ctx.lineTo(x, height - pad.bottom);
+        ctx.stroke();
+        ctx.fillText(String(year), x - 14, height - 20);
+      }
+
+      ctx.strokeStyle = "rgba(246, 243, 239, 0.42)";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, pad.top);
+      ctx.lineTo(pad.left, height - pad.bottom);
+      ctx.lineTo(width - pad.right, height - pad.bottom);
+      ctx.stroke();
+
+      const toX = (yearPosition) => pad.left + ((yearPosition - startPosition) / totalYears) * plotWidth;
+      const toY = (value) => pad.top + (1 - value / MAX_CO2) * plotHeight;
+      const currentYearPosition = getCurrentYearPosition();
+      const currentX = toX(currentYearPosition);
+      const currentY = toY(getCurrentCo2());
+      const points = [];
+      const samples = Math.max(96, Math.ceil(totalYears * 8));
+      const breakpoints = state.actions
+        .map((action) => action.yearPosition)
+        .filter((yearPosition) => yearPosition >= startPosition && yearPosition <= endPosition);
+
+      for (let i = 0; i <= samples; i += 1) {
+        const yearPosition = startPosition + (totalYears * i) / samples;
+        points.push({
+          x: toX(yearPosition),
+          y: toY(getValueAtYear(yearPosition)),
+          value: getValueAtYear(yearPosition)
+        });
+      }
+
+      breakpoints.forEach((yearPosition) => {
+        const before = Math.max(startPosition, yearPosition - 0.002);
+        const after = Math.min(endPosition, yearPosition + 0.002);
+        points.push({
+          x: toX(before),
+          y: toY(getValueAtYear(before)),
+          value: getValueAtYear(before)
+        });
+        points.push({
+          x: toX(yearPosition),
+          y: toY(getValueAtYear(yearPosition)),
+          value: getValueAtYear(yearPosition)
+        });
+        points.push({
+          x: toX(after),
+          y: toY(getValueAtYear(after)),
+          value: getValueAtYear(after)
+        });
+      });
+
+      points.push({
+        x: currentX,
+        y: currentY,
+        value: getCurrentCo2()
+      });
+      points.sort((a, b) => a.x - b.x);
+
+      ctx.strokeStyle = "rgba(246, 243, 239, 0.24)";
+      ctx.setLineDash([6, 7]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let i = 0; i <= samples; i += 1) {
+        const yearPosition = startPosition + (totalYears * i) / samples;
+        const x = toX(yearPosition);
+        const y = toY(getBaseValueAtYear(yearPosition));
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const chartBottom = toY(0);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.left, pad.top, plotWidth, plotHeight);
+      ctx.clip();
+      ctx.globalAlpha = 0.28;
+
+      for (let serial = startSerial; serial <= currentSerial; serial += 1) {
+        const yearPosition = Math.floor(serial / 12) + (serial % 12) / 12;
+        const nextYearPosition = serial === endSerial
+          ? endPosition
+          : Math.floor((serial + 1) / 12) + ((serial + 1) % 12) / 12;
+        const value = getValueAtYear(yearPosition);
+        const x = clamp(toX(yearPosition), pad.left, width - pad.right);
+        const nextX = clamp(toX(nextYearPosition), pad.left, width - pad.right);
+        const barWidth = Math.max(1, nextX - x);
+        const y = toY(value);
+        ctx.fillStyle = getCo2Color(value);
+        ctx.fillRect(x, y, barWidth, chartBottom - y);
+      }
+      ctx.restore();
+
+      const drawPath = (pathPoints) => {
+        if (pathPoints.length === 0) {
+          return;
+        }
+        ctx.beginPath();
+        pathPoints.forEach((point, index) => {
+          if (index === 0) ctx.moveTo(point.x, point.y);
+          else ctx.lineTo(point.x, point.y);
+        });
+        ctx.stroke();
+      };
+      const pastPoints = points.filter((point) => point.x <= currentX + 0.5);
+      const futurePoints = points.filter((point) => point.x >= currentX - 0.5);
+
+      ctx.strokeStyle = "rgba(246, 243, 239, 0.42)";
+      ctx.setLineDash([8, 9]);
+      ctx.lineWidth = 2.2;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      drawPath(futurePoints);
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = "#e6362f";
+      ctx.lineWidth = 4;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      drawPath(pastPoints);
+
+      if (currentX < width - pad.right - 110) {
+        const labelPosition = currentYearPosition + (endPosition - currentYearPosition) * 0.74;
+        const labelX = clamp(toX(labelPosition), pad.left + 10, width - pad.right - 120);
+        const labelY = toY(getValueAtYear(labelPosition));
+        ctx.fillStyle = "rgba(246, 243, 239, 0.68)";
+        ctx.font = "700 12px Inter, system-ui, sans-serif";
+        ctx.fillText("trajectoire estimée", labelX, Math.max(pad.top + 16, labelY - 12));
+      }
+
+      ctx.strokeStyle = "rgba(230, 54, 47, 0.52)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(currentX, pad.top);
+      ctx.lineTo(currentX, height - pad.bottom);
+      ctx.stroke();
+
+      ctx.fillStyle = "#e6362f";
+      ctx.beginPath();
+      ctx.arc(currentX, currentY, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(currentX, currentY, 10, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(246, 243, 239, 0.75)";
+      ctx.font = "700 12px Inter, system-ui, sans-serif";
+      ctx.fillText("objectif 2050", width - pad.right - 88, toY(0) - 10);
+      ctx.fillStyle = "rgba(246, 243, 239, 0.52)";
+      ctx.fillText("sans action", width - pad.right - 78, toY(INITIAL_CO2) - 10);
+    }
+
+    function render() {
+      const current = getCurrentDate();
+      timerValue.textContent = formatTime(state.remainingSeconds);
+      dateValue.textContent = formatDate();
+      co2Value.textContent = Math.round(getCurrentCo2());
+      timerFill.style.transform = `scaleX(${state.totalSeconds ? state.remainingSeconds / state.totalSeconds : 0})`;
+      pauseButton.textContent = state.isRunning ? "Pause" : "Reprendre";
+      undoButton.disabled = state.actions.length === 0;
+
+      if (state.actions.length === 0) {
+        historyText.textContent = "Aucune action enregistrée pour le moment.";
+      } else {
+        const latest = state.actions[state.actions.length - 1];
+        historyText.textContent = `Dernière action: ${formatAction(latest)} · ${state.actions.length} action${state.actions.length > 1 ? "s" : ""} au total`;
+      }
+
+      drawChart();
+
+      if (state.remainingSeconds <= 0) {
+        state.isRunning = false;
+        pauseButton.textContent = "Terminé";
+      }
+    }
+
+    function startTicker() {
+      clearInterval(state.timerId);
+      state.timerId = setInterval(() => {
+        if (!state.isRunning) {
+          return;
+        }
+        state.remainingSeconds = Math.max(0, state.remainingSeconds - 1);
+        if (state.remainingSeconds === 0) {
+          state.isRunning = false;
+        }
+        render();
+      }, 1000);
+    }
+
+    function startGame() {
+      state.config.durationMinutes = clamp(Number(durationInput.value) || 60, 1, 360);
+      state.config.startMonth = clamp(Number(monthInput.value) || 0, 0, 11);
+      state.config.startYear = clamp(Number(yearInput.value) || 2026, 2020, END_YEAR);
+      state.totalSeconds = state.config.durationMinutes * 60;
+      state.remainingSeconds = state.totalSeconds;
+      state.actions = [];
+      state.isRunning = true;
+
+      configScreen.classList.add("hidden");
+      gameScreen.classList.remove("hidden");
+      startTicker();
+      resizeCanvas();
+      render();
+    }
+
+    function resetGame() {
+      state.remainingSeconds = state.totalSeconds;
+      state.actions = [];
+      state.isRunning = true;
+      render();
+    }
+
+    function openModal() {
+      actionModal.classList.remove("hidden");
+      amountInput.focus();
+      amountInput.select();
+    }
+
+    function closeModal() {
+      actionModal.classList.add("hidden");
+    }
+
+    function setActionType(type) {
+      state.selectedActionType = type;
+      choiceButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.actionType === type);
+      });
+
+      const hints = {
+        fixed: "Retire le montant une fois à partir du niveau actuel.",
+        annual: "Retire le montant pour chaque année restante, avec un effet cumulé jusqu’en 2050.",
+        add: "Ajoute le montant à la trajectoire actuelle."
+      };
+      actionHint.textContent = hints[type];
+    }
+
+    function applyAction() {
+      const amount = clamp(Number(amountInput.value) || 0, 0, MAX_CO2);
+      if (amount <= 0) {
+        return;
+      }
+      const current = getCurrentDate();
+      state.actions.push({
+        type: state.selectedActionType,
+        amount,
+        year: current.year,
+        month: current.month,
+        yearPosition: getCurrentYearPosition()
+      });
+      closeModal();
+      render();
+    }
+
+    populateMonths();
+    resizeCanvas();
+
+    configForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      startGame();
+    });
+
+    pauseButton.addEventListener("click", () => {
+      if (state.remainingSeconds <= 0) {
+        return;
+      }
+      state.isRunning = !state.isRunning;
+      render();
+    });
+
+    undoButton.addEventListener("click", () => {
+      state.actions.pop();
+      render();
+    });
+
+    resetButton.addEventListener("click", resetGame);
+
+    backButton.addEventListener("click", () => {
+      clearInterval(state.timerId);
+      state.isRunning = false;
+      gameScreen.classList.add("hidden");
+      configScreen.classList.remove("hidden");
+    });
+
+    openActionButton.addEventListener("click", openModal);
+    closeModalButton.addEventListener("click", closeModal);
+    cancelActionButton.addEventListener("click", closeModal);
+
+    actionModal.addEventListener("click", (event) => {
+      if (event.target === actionModal) {
+        closeModal();
+      }
+    });
+
+    actionForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      applyAction();
+    });
+
+    choiceButtons.forEach((button) => {
+      button.addEventListener("click", () => setActionType(button.dataset.actionType));
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !actionModal.classList.contains("hidden")) {
+        closeModal();
+      }
+    });
+
+    if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

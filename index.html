@@ -323,6 +323,9 @@
       position: absolute;
       left: clamp(18px, 2vw, 28px);
       top: clamp(16px, 2vw, 24px);
+      display: flex;
+      gap: clamp(20px, 3vw, 42px);
+      align-items: flex-end;
       pointer-events: none;
     }
 
@@ -342,6 +345,14 @@
       font-size: clamp(2.1rem, 5vw, 4.6rem);
       line-height: 0.96;
       font-variant-numeric: tabular-nums;
+    }
+
+    .reduction-readout {
+      padding-bottom: 3px;
+    }
+
+    .reduction-readout strong {
+      font-size: clamp(1.8rem, 4vw, 3.8rem);
     }
 
     .footerbar {
@@ -572,9 +583,16 @@
     <section class="chart-wrap" aria-label="Graphique Mission 2050">
       <canvas id="chartCanvas"></canvas>
       <div class="co2-readout">
-        <span>niveau actuel</span>
-        <strong id="co2Value">700</strong>
-        <span class="unit-case">MtCO2e</span>
+        <div>
+          <span>niveau actuel</span>
+          <strong id="co2Value">700</strong>
+          <span class="unit-case">MtCO2e</span>
+        </div>
+        <div class="reduction-readout">
+          <span>réduction</span>
+          <strong id="reductionValue">0%</strong>
+          <span>depuis le départ</span>
+        </div>
       </div>
     </section>
 
@@ -637,6 +655,7 @@
     const yearInput = document.getElementById("yearInput");
     const chartCanvas = document.getElementById("chartCanvas");
     const co2Value = document.getElementById("co2Value");
+    const reductionValue = document.getElementById("reductionValue");
     const timerValue = document.getElementById("timerValue");
     const dateValue = document.getElementById("dateValue");
     const timerFill = document.getElementById("timerFill");
@@ -741,6 +760,11 @@
 
     function getCurrentCo2() {
       return getValueAtYear(getCurrentYearPosition());
+    }
+
+    function getCurrentReductionPercent() {
+      const reduction = ((INITIAL_CO2 - getCurrentCo2()) / INITIAL_CO2) * 100;
+      return clamp(reduction, 0, 100);
     }
 
     function formatTime(seconds) {
@@ -1006,6 +1030,7 @@
       timerValue.textContent = formatTime(state.remainingSeconds);
       dateValue.textContent = formatDate();
       co2Value.textContent = Math.round(getCurrentCo2());
+      reductionValue.textContent = `${Math.round(getCurrentReductionPercent())}%`;
       timerFill.style.transform = `scaleX(${state.totalSeconds ? state.remainingSeconds / state.totalSeconds : 0})`;
       pauseButton.textContent = state.isRunning ? "Pause" : "Reprendre";
       undoButton.disabled = state.actions.length === 0;

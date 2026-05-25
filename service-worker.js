@@ -1,4 +1,4 @@
-const CACHE_NAME = "mission-2050-v3";
+const CACHE_NAME = "mission-2050-v4";
 const APP_ASSETS = [
   "./",
   "./index.html",

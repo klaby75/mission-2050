@@ -1,8 +1,9 @@
-const CACHE_NAME = "mission-2050-v2";
+const CACHE_NAME = "mission-2050-v3";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
+  "./background.png",
   "./icon-192.png",
   "./icon-512.png"
 ];

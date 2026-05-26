@@ -1005,30 +1005,12 @@
         ctx.stroke();
       };
       const pastPoints = points.filter((point) => point.x <= currentX + 0.5);
-      const futurePoints = points.filter((point) => point.x >= currentX - 0.5);
-
-      ctx.strokeStyle = "rgba(246, 243, 239, 0.42)";
-      ctx.setLineDash([8, 9]);
-      ctx.lineWidth = 2.2;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      drawPath(futurePoints);
-      ctx.setLineDash([]);
 
       ctx.strokeStyle = "#e6362f";
       ctx.lineWidth = 4;
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       drawPath(pastPoints);
-
-      if (currentX < width - pad.right - 110) {
-        const labelPosition = currentYearPosition + (endPosition - currentYearPosition) * 0.74;
-        const labelX = clamp(toX(labelPosition), pad.left + 10, width - pad.right - 120);
-        const labelY = toY(getValueAtYear(labelPosition));
-        ctx.fillStyle = "rgba(246, 243, 239, 0.68)";
-        ctx.font = "700 12px Inter, system-ui, sans-serif";
-        ctx.fillText("trajectoire estimée", labelX, Math.max(pad.top + 16, labelY - 12));
-      }
 
       ctx.strokeStyle = "rgba(230, 54, 47, 0.52)";
       ctx.lineWidth = 1;

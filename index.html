@@ -790,7 +790,7 @@
           value -= action.amount;
         } else if (action.type === "annual") {
           const yearsElapsed = Math.max(0, yearPosition - action.yearPosition);
-          value -= action.amount * (1 + yearsElapsed);
+          value -= action.amount * yearsElapsed;
         } else if (action.type === "add") {
           value += action.amount;
         }
@@ -1142,7 +1142,7 @@
 
       const hints = {
         fixed: "Retire le montant une fois à partir du niveau actuel.",
-        annual: "Retire le montant pour chaque année restante, avec un effet cumulé jusqu’en 2050.",
+        annual: "Applique une baisse progressive chaque année à partir de la carte.",
         add: "Ajoute le montant à la trajectoire actuelle."
       };
       actionHint.textContent = hints[type];
